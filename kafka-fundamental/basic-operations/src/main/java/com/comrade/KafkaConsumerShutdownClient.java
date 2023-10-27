@@ -16,13 +16,13 @@ public class KafkaConsumerShutdownClient {
 		final Logger logger = LoggerFactory.getLogger(KafkaConsumerShutdownClient.class);
 		Properties properties = new Properties();
 		String groupid="batman";
-		properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+		properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.21.0.3:9092");
 		properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		properties.put(ConsumerConfig.GROUP_ID_CONFIG, groupid);
 		properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		KafkaConsumer<String, String> consumer=new KafkaConsumer<>(properties);
-		consumer.subscribe(Arrays.asList("important_tweets","first-topic","second_topic","batman"));
+		consumer.subscribe(Arrays.asList("batman"));
 		while (true) {
 			ConsumerRecords<String, String> consumerRecords=consumer.poll(Duration.ofMillis(100));
 			consumerRecords.forEach(data->{

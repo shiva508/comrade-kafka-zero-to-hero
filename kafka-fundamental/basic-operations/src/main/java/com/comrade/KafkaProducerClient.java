@@ -3,10 +3,13 @@ package com.comrade;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
-public class KafkaProducerClient 
+import java.util.Random;
+
+public class KafkaProducerClient
 {
     public static void main( String[] args )
     {
@@ -15,7 +18,8 @@ public class KafkaProducerClient
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG , StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         KafkaProducer<String, String> kafkaProducer=new KafkaProducer<>(properties);
-        ProducerRecord<String, String> producerRecord=new ProducerRecord<String, String>("batman", "Welcome to Bat Cave Robbin");
+        int key = new Random().nextInt(10000);
+        ProducerRecord<String, String> producerRecord=new ProducerRecord<String, String>("batman", "KEY_"+String.valueOf(key),"Welcome to Bat Cave Robbin, Now you lnow we are not alone");
         kafkaProducer.send(producerRecord);
         kafkaProducer.flush();
         kafkaProducer.close();

@@ -30,10 +30,6 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
-/**
- * Hello world!
- *
- */
 public class OpenSearchConsumer {
 	public static void main(String[] args) throws IOException {
 

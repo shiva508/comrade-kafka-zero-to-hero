@@ -9,41 +9,30 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 public class KafkaConsumerClient {
 	public static void main(String[] args) {
 		final Logger logger = LoggerFactory.getLogger(KafkaConsumerClient.class);
-		Properties properties = new Properties();
-		String groupid = "batman";
-		properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.21.0.3:9092");
-		properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		properties.put(ConsumerConfig.GROUP_ID_CONFIG, groupid);
-		properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-
-		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
+		KafkaConsumer<String, String> consumer = getStringStringKafkaConsumer();
 
 		final Thread mainThread = Thread.currentThread();
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				consumer.wakeup();
-				try {
-					mainThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            consumer.wakeup();
+            try {
+                mainThread.join();
+            } catch (InterruptedException e) {
+                logger.error(e.getMessage());
+            }
+        }));
 
 		try {
-			consumer.subscribe(Arrays.asList("important_tweets", "first-topic", "second_topic","batman"));
+			consumer.subscribe(List.of("batman"));
 			while (true) {
 				ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
 				consumerRecords.forEach(data -> {
-					logger.info("KEY:" + data.key() + "    VALUE:" + data.value());
-					logger.info("partition:" + data.partition() + "    offset:" + data.offset());
+					logger.info("KEY:" + data.key() + "    VALUE:" + data.value()+" partition:" + data.partition() + "    offset:" + data.offset());
 				});
 			}
 		} catch (Exception e) {
@@ -51,5 +40,16 @@ public class KafkaConsumerClient {
 		} finally {
 			consumer.close();
 		}
+	}
+
+	private static KafkaConsumer<String, String> getStringStringKafkaConsumer() {
+		Properties properties = new Properties();
+		String groupId = "batman";
+		properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.21.0.3:9092");
+		properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+		properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+		properties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return new KafkaConsumer<>(properties);
 	}
 }

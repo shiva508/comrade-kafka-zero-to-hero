@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 public class KafkaConsumerAssignAndSeekClient {
@@ -23,15 +24,14 @@ public class KafkaConsumerAssignAndSeekClient {
 		properties.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, CooperativeStickyAssignor.class.getName());
 		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 		TopicPartition topicPartitionReadFrom = new TopicPartition(topic, 3);
-		consumer.assign(Arrays.asList(topicPartitionReadFrom));
-		Long offsetToReadFrom = 15L;
+		consumer.assign(List.of(topicPartitionReadFrom));
+		long offsetToReadFrom = 15L;
 		int numberOfMessagesReadSoFor = 0;
 		int numberOfMessagesToRead = 5;
 		boolean keepReading = true;
 		consumer.seek(topicPartitionReadFrom, offsetToReadFrom);
 		while (keepReading) {
 			ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
-
 			for (ConsumerRecord<String, String> data : consumerRecords) {
 				numberOfMessagesReadSoFor += 1;
 				logger.info("KEY:" + data.key() + "    VALUE:" + data.value());

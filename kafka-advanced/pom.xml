@@ -8,13 +8,11 @@
         <artifactId>comrade-kafka-zero-to-hero</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>kafka-advanced</artifactId>
     <packaging>pom</packaging>
     <modules>
         <module>cloud-integration</module>
         <module>basic-integration</module>
-        <module>admin-ui</module>
     </modules>
 
     <properties>

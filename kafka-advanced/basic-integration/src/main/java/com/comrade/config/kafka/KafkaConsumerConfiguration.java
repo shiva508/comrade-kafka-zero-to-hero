@@ -1,5 +1,6 @@
 package com.comrade.config.kafka;
 
+import com.comrade.entity.UserProfileEntity;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -34,18 +35,18 @@ public class KafkaConsumerConfiguration {
 	}
 	
 	@Bean
-	public ConsumerFactory<String, Userprofile> userConsumerFactory() {
+	public ConsumerFactory<String, UserProfileEntity> userConsumerFactory() {
 		Map<String, Object> config = new HashMap<>();
 		config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.21.0.3:9092");
 		config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		config.put(ConsumerConfig.GROUP_ID_CONFIG, "studentpool-2");
-		return new DefaultKafkaConsumerFactory<>(config,new StringDeserializer(),new JsonDeserializer<>(Userprofile.class));
+		return new DefaultKafkaConsumerFactory<>(config,new StringDeserializer(),new JsonDeserializer<>(UserProfileEntity.class));
 	}
 	
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, Userprofile> userConcurrentKafkaListenerContainerFactory(){
-		ConcurrentKafkaListenerContainerFactory<String, Userprofile> factory=new ConcurrentKafkaListenerContainerFactory<>();
+	public ConcurrentKafkaListenerContainerFactory<String, UserProfileEntity> userConcurrentKafkaListenerContainerFactory(){
+		ConcurrentKafkaListenerContainerFactory<String, UserProfileEntity> factory=new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(userConsumerFactory());
 		return factory;
 	}

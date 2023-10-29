@@ -20,7 +20,7 @@ public class KafkaProducerCallbackClient {
 		String topic="batman";
         for (int i=0;i<10;i++) {
         	String key="ID_"+i;
-        	ProducerRecord<String, String> producerRecord=new ProducerRecord<String, String>(topic, key, "USING CALL BACK Bigining to kafka "+i);
+        	ProducerRecord<String, String> producerRecord=new ProducerRecord<String, String>(topic, key, "USING CALL BACK Bigenning to kafka "+i);
             kafkaProducer.send(producerRecord,new Callback() {
     			@Override
     			public void onCompletion(RecordMetadata metadata, Exception exception) {
